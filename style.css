@@ -1,0 +1,32 @@
+#header {
+	text-align: center;
+}
+
+.column {
+  float: left;
+  padding: 10px;
+}
+
+#filter {
+	width: 25%;
+}
+
+#graph {
+	width: 45%;
+}
+
+#table {
+	width: 25%;
+}
+
+#region {
+	width: 100%;
+}
+
+#admission-rate {
+	width: 100%;
+}
+
+#cost {
+	width: 100%;
+}
