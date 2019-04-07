@@ -15,6 +15,8 @@ $(document).ready(function () {
 var width = 500;
 var height = 500;
 
+var selected_colleges = [];
+
 d3.csv("colleges.csv", function (csv) {
 	for (var i = 0; i < csv.length; ++i) {
 		csv[i].Name = String(csv[i]["Name"]);
@@ -70,7 +72,7 @@ d3.csv("colleges.csv", function (csv) {
 		.attr("x", width - 16)
 		.attr("y", -6)
 		.style("text-anchor", "end")
-		.text("ACT");
+		.text("ACT"); // doesn't show up 
 
 	chart
 		.append("g")
@@ -82,10 +84,13 @@ d3.csv("colleges.csv", function (csv) {
 		.attr("y", 6)
 		.attr("dy", ".71em")
 		.style("text-anchor", "end")
-		.text("SAT");
+		.text("SAT"); // doesn't show up 
 
 	var button = d3.select("#button");
 	button.on("click", function () {
+		brush.move(gBrush, null);
+		selected_colleges = [];
+		d3.selectAll("circle").classed("selected-brush", false);
 		var region = []
 		var admission_rate = []
 		var cost = []
@@ -167,5 +172,54 @@ d3.csv("colleges.csv", function (csv) {
 			cost_string = "$60,000-$70,000";
 		}
 		return cost.includes(cost_string);
+	}
+
+	var brush = d3.brush()
+		.extent([[-10, -10], [width + 10, height + 10]])
+		.on('start', handleBrushStart)
+		.on('brush', handleBrushMove)
+		.on('end', handleBrushEnd);
+
+	gBrush.call(brush);
+
+	function handleBrushStart() {
+		brush.move(gBrush, null);
+	}
+
+	function handleBrushMove() {
+		selected_colleges = [];
+		var sel = d3.event.selection;
+		if (!sel) return;
+		var [[left, top], [right, bottom]] = sel;
+		d3.selectAll("circle").classed("selected-brush", function (d) {
+			var cx = xScale(d.ACT);
+			var cy = yScale(d.SAT);
+			if (left <= cx && cx <= right && top <= cy && cy <= bottom) {
+				selected_colleges.push(d);
+				return true;
+			} else {
+				return false;
+			}
+		});
+		updateTable();
+	}
+
+	function handleBrushEnd() {
+		var sel = d3.event.selection;
+		if (!sel) {
+			d3.selectAll("circle").classed("selected-brush", false);
+		}
+	}
+
+	function updateTable() {
+		d3.select("table").remove();
+		var table = d3.select("#table")
+			.append("table");
+		var tbody = table.append("tbody");
+		var rows = tbody.selectAll('tr')
+			.data(selected_colleges)
+			.enter()
+			.append('tr')
+			.text(function (d) { return d["Name"] });
 	}
 });

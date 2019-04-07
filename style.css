@@ -30,3 +30,8 @@
 #cost {
 	width: 100%;
 }
+
+.selected-brush {
+	fill: red;
+	stroke: red;
+}
