@@ -89,6 +89,8 @@ d3.csv("colleges.csv", function (csv) {
 	var button = d3.select("#button");
 	button.on("click", function () {
 		brush.move(gBrush, null);
+		d3.select("table").remove();
+		d3.select(".detail-table").remove();
 		selected_colleges = [];
 		d3.selectAll("circle").classed("selected-brush", false);
 		var region = []
@@ -195,8 +197,10 @@ d3.csv("colleges.csv", function (csv) {
 			var cx = xScale(d.ACT);
 			var cy = yScale(d.SAT);
 			if (left <= cx && cx <= right && top <= cy && cy <= bottom) {
-				selected_colleges.push(d);
-				return true;
+				if (d3.select(this).attr("r") == 3) {
+					selected_colleges.push(d);
+					return true;
+				}
 			} else {
 				return false;
 			}
@@ -213,13 +217,42 @@ d3.csv("colleges.csv", function (csv) {
 
 	function updateTable() {
 		d3.select("table").remove();
+		d3.select(".detail-table").remove();
 		var table = d3.select("#table")
 			.append("table");
-		var tbody = table.append("tbody");
+		var tbody = table
+			.append("tbody");
 		var rows = tbody.selectAll('tr')
 			.data(selected_colleges)
 			.enter()
 			.append('tr')
-			.text(function (d) { return d["Name"] });
+			.text(function (d) { return d["Name"] })
+			.on("click", function (d) {
+				updateDetails(d);
+			})
+	}
+
+	function updateDetails(d) {
+		d3.select(".detail-table").remove();
+		var table = d3.select("#details")
+			.append("table")
+			.attr("class", "detail-table");
+		var tbody = table
+			.append("tbody");
+		tbody
+			.append('tr')
+			.text(function () { return d["Name"] })
+			.append('tr')
+			.text(function () { return "Control: " + d["Control"] })
+			.append('tr')
+			.text(function () { return "Region: " + d["Region"] })
+			.append('tr')
+			.text(function () { return "Admission Rate: " + d["AdmissionRate"] * 100 + "%" })
+			.append('tr')
+			.text(function () { return "ACT: " + d["ACT"] })
+			.append('tr')
+			.text(function () { return "SAT: " + d["SAT"] })
+			.append('tr')
+			.text(function () { return "Average Cost: $" + d["AverageCost"] })
 	}
 });

@@ -8,15 +8,19 @@
 }
 
 #filter {
-	width: 25%;
+	width: 15%;
 }
 
 #graph {
-	width: 45%;
+	width: 35%;
 }
 
 #table {
-	width: 25%;
+	width: 20%;
+}
+
+#details {
+	width: 20%;
 }
 
 #region {
@@ -34,4 +38,9 @@
 .selected-brush {
 	fill: red;
 	stroke: red;
+}
+
+#table {
+    overflow: scroll;
+    height: 500px;
 }
