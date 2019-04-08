@@ -114,7 +114,8 @@ d3.csv("colleges.csv", function (csv) {
 		.attr("x", width - 16)
 		.attr("y", -6)
 		.style("text-anchor", "end")
-		.text("ACT"); // doesn't show up 
+		.text("Admission %")
+		.style("fill", "black");
 
 	chart
 		.append("g")
@@ -122,11 +123,12 @@ d3.csv("colleges.csv", function (csv) {
 		.call(yAxis)
 		.append("text")
 		.attr("class", "label")
-		.attr("transform", "rotate(-90)")
+		.attr("transform", "rotate(0)")
 		.attr("y", 6)
 		.attr("dy", ".71em")
 		.style("text-anchor", "end")
-		.text("SAT"); // doesn't show up 
+		.text("SAT")
+		.style("fill", "black"); 
 
 	var button = d3.select("#button");
 	button.on("click", function () {
