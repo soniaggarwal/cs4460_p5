@@ -49,6 +49,10 @@ d3.csv("colleges.csv", function (csv) {
 	var max_population = d3.max(population);
 	var population_scale = d3.scaleLinear().domain([0, max_population]).range([2, 6]);
 
+	var tooltip = d3.select("body").append("div")
+		.attr("class", "tooltip")
+		.style("opacity", 0);
+
 	var chart = d3.select("#graph")
 		.append("svg:svg")
 		.attr("width", width)
@@ -75,6 +79,19 @@ d3.csv("colleges.csv", function (csv) {
 		})
 		.attr("stroke", function (d) {
 			return get_color_from_locale(d)
+		})
+		.on("mouseover", function (d) {
+			tooltip.transition()
+				.duration(200)
+				.style("opacity", .9);
+			tooltip.html(d["Name"])
+				.style("left", (d3.event.pageX + 5) + "px")
+				.style("top", (d3.event.pageY - 28) + "px");
+		})
+		.on("mouseout", function (d) {
+			tooltip.transition()
+				.duration(500)
+				.style("opacity", 0);
 		});
 
 	function get_color_from_locale(d) {
@@ -128,7 +145,7 @@ d3.csv("colleges.csv", function (csv) {
 		.attr("dy", ".71em")
 		.style("text-anchor", "end")
 		.text("SAT")
-		.style("fill", "black"); 
+		.style("fill", "black");
 
 	var button = d3.select("#button");
 	button.on("click", function () {
@@ -288,22 +305,22 @@ d3.csv("colleges.csv", function (csv) {
 			.attr("class", "detail-table");
 		var tbody = table
 			.append("tbody");
-		tbody
-			.append('tr')
+		tbody.append('tr')
 			.text(d["Name"])
-			.append('tr')
+			.style("font-weight", "bold")
+		tbody.append('tr')
 			.text("Control: " + d["Control"])
-			.append('tr')
+		tbody.append('tr')
 			.text("Region: " + d["Region"])
-			.append('tr')
+		tbody.append('tr')
 			.text("Admission Rate: " + d["AdmissionRate"] * 100 + "%")
-			.append('tr')
+		tbody.append('tr')
 			.text("ACT: " + d["ACT"])
-			.append('tr')
+		tbody.append('tr')
 			.text("SAT: " + d["SAT"])
-			.append('tr')
+		tbody.append('tr')
 			.text("Average Cost: $" + d["AverageCost"])
-			.append('tr')
+		tbody.append('tr')
 			.text("Undergraduate Population: " + d["UndergradPopulation"])
 	}
 });

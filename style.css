@@ -52,3 +52,9 @@ thead {
     overflow: scroll;
     height: 500px;
 }
+
+.tooltip {
+	position: absolute;
+	font-size: 10px;
+	pointer-events: none;
+  }
