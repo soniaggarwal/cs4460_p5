@@ -28,19 +28,26 @@ d3.csv("colleges.csv", function (csv) {
 		csv[i].UndergradPopulation = Number(csv[i]["Undergrad Population"]);
 		csv[i].AverageCost = Number(csv[i]["Average Cost"]);
 		csv[i].MedianEarnings = Number(csv[i]["Median Earnings 8 years After Entry"]);
+		csv[i].UndergradPopulation = Number(csv[i]["Undergrad Population"])
 	}
 
 	var actExtent = d3.extent(csv, function (row) { return row.ACT; });
 	var satExtent = d3.extent(csv, function (row) { return row.SAT; });
 
 	// need to change if including 0's
-	// var xScale = d3.scaleLinear().domain(actExtent).range([50, 470]);
 	// var yScale = d3.scaleLinear().domain(satExtent).range([470, 30]);
-	var xScale = d3.scaleLinear().domain([12, 36]).range([50, 470]);
+	var xScale = d3.scaleLinear().domain([0, 1]).range([50, 470]);
 	var yScale = d3.scaleLinear().domain([600, 1600]).range([470, 30]);
 
 	var xAxis = d3.axisBottom().scale(xScale);
 	var yAxis = d3.axisLeft().scale(yScale);
+
+	var population = []
+	csv.forEach(element => {
+		population.push(element["UndergradPopulation"])
+	});
+	var max_population = d3.max(population);
+	var population_scale = d3.scaleLinear().domain([0, max_population]).range([2, 6]);
 
 	var chart = d3.select("#graph")
 		.append("svg:svg")
@@ -54,14 +61,49 @@ d3.csv("colleges.csv", function (csv) {
 		.data(csv)
 		.enter()
 		.filter(function (d) {
-			return d.ACT != 0 && d.SAT != 0; // can i just do this? 
+			return d.SAT != 0; // can i just do this? 
 		})
 		.append("circle")
 		.attr("id", function (d, i) { return i; })
-		.attr("stroke", "black")
-		.attr("cx", function (d) { return xScale(d.ACT); })
+		.attr("cx", function (d) { return xScale(d.AdmissionRate); })
 		.attr("cy", function (d) { return yScale(d.SAT); })
-		.attr("r", 3);
+		.attr("r", function (d) {
+			return population_scale(d["UndergradPopulation"]);
+		})
+		.attr("fill", function (d) {
+			return get_color_from_locale(d)
+		})
+		.attr("stroke", function (d) {
+			return get_color_from_locale(d)
+		});
+
+	function get_color_from_locale(d) {
+		if (d["Locale"] == "Mid-size City") {
+			return "red";
+		} else if (d["Locale"] == "Remote Town") {
+			return "green";
+		} else if (d["Locale"] == "Large Suburb") {
+			return "yellow";
+		} else if (d["Locale"] == "Distant Town") {
+			return "blue";
+		} else if (d["Locale"] == "Small City") {
+			return "orange";
+		} else if (d["Locale"] == "Fringe Town") {
+			return "purple";
+		} else if (d["Locale"] == "Remote Rural") {
+			return "magenta";
+		} else if (d["Locale"] == "Large City") {
+			return "maroon";
+		} else if (d["Locale"] == "Fringe Rural") {
+			return "olive";
+		} else if (d["Locale"] == "Mid-size Suburb") {
+			return "pink";
+		} else if (d["Locale"] == "Small Suburb") {
+			return "teal";
+		} else if (d["Locale"] == "Distant Rural") {
+			return "black";
+		}
+	}
 
 	chart
 		.append("g")
@@ -108,7 +150,7 @@ d3.csv("colleges.csv", function (csv) {
 		d3.selectAll("circle")
 			.attr('r', function (d) {
 				if (checkRegion(d, region) && checkAdmissionRate(d, admission_rate) && checkCost(d, cost)) {
-					return 3;
+					return population_scale(d["UndergradPopulation"]);
 				} else {
 					return 0;
 				}
@@ -194,10 +236,10 @@ d3.csv("colleges.csv", function (csv) {
 		if (!sel) return;
 		var [[left, top], [right, bottom]] = sel;
 		d3.selectAll("circle").classed("selected-brush", function (d) {
-			var cx = xScale(d.ACT);
+			var cx = xScale(d.AdmissionRate);
 			var cy = yScale(d.SAT);
 			if (left <= cx && cx <= right && top <= cy && cy <= bottom) {
-				if (d3.select(this).attr("r") == 3) {
+				if (d3.select(this).attr("r") == population_scale(d["UndergradPopulation"])) {
 					selected_colleges.push(d);
 					return true;
 				}
@@ -220,6 +262,11 @@ d3.csv("colleges.csv", function (csv) {
 		d3.select(".detail-table").remove();
 		var table = d3.select("#table")
 			.append("table");
+		var thead = table
+			.append("thead");
+		thead
+			.append("tr")
+			.text("Filtered Colleges")
 		var tbody = table
 			.append("tbody");
 		var rows = tbody.selectAll('tr')
@@ -241,18 +288,20 @@ d3.csv("colleges.csv", function (csv) {
 			.append("tbody");
 		tbody
 			.append('tr')
-			.text(function () { return d["Name"] })
+			.text(d["Name"])
 			.append('tr')
-			.text(function () { return "Control: " + d["Control"] })
+			.text("Control: " + d["Control"])
 			.append('tr')
-			.text(function () { return "Region: " + d["Region"] })
+			.text("Region: " + d["Region"])
 			.append('tr')
-			.text(function () { return "Admission Rate: " + d["AdmissionRate"] * 100 + "%" })
+			.text("Admission Rate: " + d["AdmissionRate"] * 100 + "%")
 			.append('tr')
-			.text(function () { return "ACT: " + d["ACT"] })
+			.text("ACT: " + d["ACT"])
 			.append('tr')
-			.text(function () { return "SAT: " + d["SAT"] })
+			.text("SAT: " + d["SAT"])
 			.append('tr')
-			.text(function () { return "Average Cost: $" + d["AverageCost"] })
+			.text("Average Cost: $" + d["AverageCost"])
+			.append('tr')
+			.text("Undergraduate Population: " + d["UndergradPopulation"])
 	}
 });

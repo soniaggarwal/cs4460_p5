@@ -1,3 +1,11 @@
+body {
+	font-family: Sans-Serif;
+}
+
+thead {
+	font-weight: bold;
+}
+
 #header {
 	text-align: center;
 }
@@ -36,8 +44,8 @@
 }
 
 .selected-brush {
-	fill: red;
-	stroke: red;
+	/* fill: red;
+	stroke: red; */
 }
 
 #table {
