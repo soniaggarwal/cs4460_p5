@@ -34,10 +34,8 @@ d3.csv("colleges.csv", function (csv) {
 	var actExtent = d3.extent(csv, function (row) { return row.ACT; });
 	var satExtent = d3.extent(csv, function (row) { return row.SAT; });
 
-	// need to change if including 0's
-	// var yScale = d3.scaleLinear().domain(satExtent).range([470, 30]);
 	var xScale = d3.scaleLinear().domain([0, 1]).range([50, 470]);
-	var yScale = d3.scaleLinear().domain([600, 1600]).range([470, 30]);
+	var yScale = d3.scaleLinear().domain(satExtent).range([470, 30]);
 
 	var xAxis = d3.axisBottom().scale(xScale);
 	var yAxis = d3.axisLeft().scale(yScale);
@@ -64,9 +62,6 @@ d3.csv("colleges.csv", function (csv) {
 	var temp = chart.selectAll("circle")
 		.data(csv)
 		.enter()
-		.filter(function (d) {
-			return d.SAT != 0; // can i just do this? 
-		})
 		.append("circle")
 		.attr("id", function (d, i) { return i; })
 		.attr("cx", function (d) { return xScale(d.AdmissionRate); })
