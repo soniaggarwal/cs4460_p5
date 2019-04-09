@@ -87,7 +87,10 @@ d3.csv("colleges.csv", function (csv) {
 			tooltip.transition()
 				.duration(500)
 				.style("opacity", 0);
-		});
+		})
+		.on("click", function(d) {
+            updateDetails(d);
+        });
 
 		function get_color_from_locale(d) {
 		if (d["Locale"] == "Large City") {

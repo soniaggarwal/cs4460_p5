@@ -58,3 +58,7 @@ thead {
 	font-size: 10px;
 	pointer-events: none;
   }
+
+.text {
+    font-size: 10px;
+}
