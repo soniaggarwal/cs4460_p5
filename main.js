@@ -291,6 +291,7 @@ d3.csv("colleges.csv", function (csv) {
 			.on("click", function (d) {
 				updateDetails(d);
 			})
+			.style("cursor", "pointer");
 	}
 
 	function updateDetails(d) {
