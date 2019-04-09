@@ -94,31 +94,31 @@ d3.csv("colleges.csv", function (csv) {
 				.style("opacity", 0);
 		});
 
-	function get_color_from_locale(d) {
-		if (d["Locale"] == "Mid-size City") {
-			return "red";
-		} else if (d["Locale"] == "Remote Town") {
-			return "green";
-		} else if (d["Locale"] == "Large Suburb") {
-			return "yellow";
-		} else if (d["Locale"] == "Distant Town") {
-			return "blue";
+		function get_color_from_locale(d) {
+		if (d["Locale"] == "Large City") {
+			return "#010D7B";
+		} else if (d["Locale"] == "Mid-size City") {
+			return "#0A1881";
 		} else if (d["Locale"] == "Small City") {
-			return "orange";
-		} else if (d["Locale"] == "Fringe Town") {
-			return "purple";
-		} else if (d["Locale"] == "Remote Rural") {
-			return "magenta";
-		} else if (d["Locale"] == "Large City") {
-			return "maroon";
-		} else if (d["Locale"] == "Fringe Rural") {
-			return "olive";
+			return "#12238D";
+		} else if (d["Locale"] == "Large Suburb") {
+			return "#203294";
 		} else if (d["Locale"] == "Mid-size Suburb") {
-			return "pink";
+			return "#2D44A2";
 		} else if (d["Locale"] == "Small Suburb") {
-			return "teal";
+			return "#3750A7";
+		} else if (d["Locale"] == "Fringe Town") {
+			return "#4B6BB8";
+		} else if (d["Locale"] == "Remote Town") {
+			return "#577CC3";
+		} else if (d["Locale"] == "Distant Town") {
+			return "#638CCC";
+		} else if (d["Locale"] == "Fringe Rural") {
+			return "#729FD8";
+		} else if (d["Locale"] == "Remote Rural") {
+			return "#88BBEA";
 		} else if (d["Locale"] == "Distant Rural") {
-			return "black";
+			return "#95C9EF";
 		}
 	}
 
